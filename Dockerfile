@@ -2,12 +2,13 @@
 
 FROM debian:jessie
 
-RUN mkdir -p /opt/influxdb/shared/data
-
 ADD http://s3.amazonaws.com/influxdb/influxdb_latest_amd64.deb /influxdb_latest_amd64.deb
-RUN dpkg -i /influxdb_latest_amd64.deb
-RUN rm -rf /opt/influxdb/shared/data
+RUN mkdir -p /opt/influxdb/shared/data && \
+    dpkg -i /influxdb_latest_amd64.deb && \
+    rm -rf /opt/influxdb/shared/data && \
+    chown -R daemon:daemon /opt/influxdb
 
+USER daemon
 EXPOSE 8083 8086
 
 ENTRYPOINT ["/usr/bin/influxdb"]
